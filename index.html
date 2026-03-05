@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gaytri Khurpade · sliding portfolio</title>
+  <!-- Font Awesome 6 (free) & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    /* vibrant dark mode */
+    body {
+      background: #0a0e17;
+      color: #edf2f9;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* main container */
+    .portfolio-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem 2rem 1rem;
+      width: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== SLIDING CAROUSEL ===== */
+    .carousel-wrapper {
+      position: relative;
+      width: 100%;
+      background: #101826;
+      border-radius: 3rem 3rem 2rem 2rem;
+      box-shadow: 0 35px 60px -20px #000000, 0 0 0 1px #384b70 inset;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+
+    .carousel-container {
+      display: flex;
+      transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.15, 1);
+      will-change: transform;
+    }
+
+    .carousel-slide {
+      flex: 0 0 100%;
+      padding: 3rem 3.5rem;
+      background: #14212e;
+      background: radial-gradient(circle at 10% 20%, #1c2a40, #0f1a28);
+      min-height: 650px;
+      display: flex;
+      flex-direction: column;
+      border-right: 2px solid #31486c;
+    }
+
+    /* slide specific gradients */
+    .slide-home { background: radial-gradient(circle at 80% 30%, #1f314f, #0d1725); }
+    .slide-projects { background: radial-gradient(circle at 20% 80%, #1f2d47, #0f1728); }
+    .slide-skills { background: radial-gradient(circle at 70% 60%, #19273f, #0c1322); }
+    .slide-vision { background: radial-gradient(circle at 30% 30%, #1e2b45, #0b1423); }
+    .slide-contact { background: radial-gradient(circle at 50% 50%, #233656, #0f1a2c); }
+
+    /* ===== LEFT AND RIGHT ARROWS (MIDDLE) ===== */
+    .nav-arrow-left, .nav-arrow-right {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      background: rgba(47, 65, 101, 0.8);
+      backdrop-filter: blur(8px);
+      border: 2px solid #7f9eff;
+      color: white;
+      font-size: 2.5rem;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 10px 25px #000000cc, 0 0 15px #3f6eff;
+      transition: 0.2s;
+    }
+
+    .nav-arrow-left {
+      left: 20px;
+    }
+
+    .nav-arrow-right {
+      right: 20px;
+    }
+
+    .nav-arrow-left:hover:not(:disabled), .nav-arrow-right:hover:not(:disabled) {
+      background: #3b5285;
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: 0 0 30px #608cff;
+    }
+
+    .nav-arrow-left:disabled, .nav-arrow-right:disabled {
+      opacity: 0.3;
+      cursor: default;
+      filter: grayscale(0.8);
+      box-shadow: none;
+    }
+
+    /* slide indicator (small text at bottom) */
+    .slide-indicator-bottom {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(20, 30, 50, 0.7);
+      backdrop-filter: blur(8px);
+      padding: 0.5rem 1.5rem;
+      border-radius: 60px;
+      border: 1px solid #5f7ec0;
+      color: #d1e4ff;
+      font-size: 1rem;
+      z-index: 100;
+    }
+
+    /* animated profile */
+    .profile-row {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .animated-avatar {
+      width: 170px;
+      height: 170px;
+      background: linear-gradient(135deg, #b477ff, #4b7aff, #7a6aff);
+      border-radius: 42% 58% 38% 62% / 56% 45% 55% 44%;
+      animation: morphShape 7s ease-in-out infinite, float 5s infinite, glowPulse 3s infinite alternate;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      color: white;
+      box-shadow: 0 0 45px #6080ff;
+      border: 3px solid #ffffff70;
+    }
+    @keyframes morphShape {
+      0% { border-radius: 42% 58% 38% 62% / 56% 45% 55% 44%; }
+      33% { border-radius: 62% 38% 58% 42% / 48% 62% 38% 52%; }
+      66% { border-radius: 38% 62% 42% 58% / 62% 40% 60% 38%; }
+      100% { border-radius: 42% 58% 38% 62% / 56% 45% 55% 44%; }
+    }
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(1.5deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+    @keyframes glowPulse {
+      0% { box-shadow: 0 0 20px #4f7aff; }
+      100% { box-shadow: 0 0 70px #ae9bff, 0 0 120px #4f7aff; }
+    }
+
+    h2 {
+      font-size: 2.7rem;
+      font-weight: 700;
+      background: linear-gradient(145deg, #e2ecff, #b6d0ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.01em;
+      margin: 1rem 0 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* skill chips */
+    .skill-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 1.5rem;
+      margin: 1rem 0;
+    }
+    .skill-item {
+      background: #1f314a;
+      padding: 0.7rem 2rem;
+      border-radius: 60px;
+      font-weight: 500;
+      color: #d1e4ff;
+      border: 1px solid #6d8fde;
+      box-shadow: 0 0 12px #203a70;
+      backdrop-filter: blur(4px);
+      transition: 0.15s;
+    }
+    .skill-item:hover {
+      background: #2b4170;
+      color: white;
+      transform: scale(1.03);
+      border-color: #b3ccff;
+      box-shadow: 0 0 25px #6380ff;
+    }
+
+    .strength-badge {
+      background: #1e2e4a;
+      border: 1px solid #6983cf;
+      padding: 0.5rem 1.5rem;
+      border-radius: 40px;
+      color: #d3e2ff;
+      font-weight: 500;
+    }
+
+    /* project cards */
+    .project-slider {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .proj-card {
+      background: #1e2b41;
+      border-radius: 2rem;
+      padding: 2rem 1.8rem;
+      border: 2px solid #3f5b8c;
+      box-shadow: 0 18px 28px -15px #000000;
+      transition: 0.2s;
+    }
+    .proj-card:hover {
+      transform: translateY(-8px);
+      border-color: #9bb9ff;
+      box-shadow: 0 30px 40px -18px #2d57d0;
+    }
+    .status-pill {
+      display: inline-block;
+      background: #2c4070;
+      border-radius: 40px;
+      padding: 0.2rem 1.2rem;
+      font-size: 0.85rem;
+      color: #ccdeff;
+      border: 1px solid #7b9ef5;
+      margin: 0.8rem 0;
+    }
+
+    /* vision list */
+    .vision-list {
+      list-style: none;
+      margin: 2rem 0;
+    }
+    .vision-list li {
+      font-size: 1.3rem;
+      margin: 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: #1f314d;
+      padding: 1rem 2rem;
+      border-radius: 60px;
+      border-left: 8px solid #779cff;
+    }
+
+    /* contact page - full separate slide */
+    .contact-full {
+      background: #1f3149;
+      border-radius: 2.5rem;
+      padding: 2.5rem;
+      border: 1px solid #6080cf;
+      margin-top: 1rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+    .contact-info {
+      background: #162337;
+      padding: 2rem;
+      border-radius: 2rem;
+      border: 1px solid #4f6db0;
+    }
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      font-size: 1.2rem;
+    }
+    .info-item i {
+      width: 2rem;
+      color: #8aabff;
+    }
+    .social-links {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 2rem;
+      font-size: 2rem;
+    }
+    .social-links i {
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .social-links i:hover {
+      color: #aac2ff;
+      transform: scale(1.1);
+    }
+    .contact-form-full {
+      background: #162337;
+      padding: 2rem;
+      border-radius: 2rem;
+      border: 1px solid #4f6db0;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    input, textarea {
+      background: #0f1d30;
+      border: 2px solid #3b5590;
+      padding: 1rem 1.8rem;
+      border-radius: 60px;
+      color: white;
+      width: 100%;
+    }
+    textarea {
+      border-radius: 30px;
+      min-height: 120px;
+    }
+    .btn-glow {
+      background: #3160cc;
+      border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 60px;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1.2rem;
+      transition: 0.2s;
+    }
+    .btn-glow:hover {
+      background: #4775ff;
+      box-shadow: 0 0 30px #3f73ff;
+    }
+
+    footer {
+      text-align: center;
+      color: #7f94c2;
+      padding: 2rem 0 0.5rem;
+    }
+
+    @media (max-width: 700px) {
+      .carousel-slide { padding: 2rem 1.5rem; }
+      h2 { font-size: 2.2rem; }
+      .nav-arrow-left, .nav-arrow-right {
+        width: 45px;
+        height: 45px;
+        font-size: 1.8rem;
+      }
+      .nav-arrow-left { left: 10px; }
+      .nav-arrow-right { right: 10px; }
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="portfolio-container">
+    <!-- carousel wrapper with left/right arrows -->
+    <div class="carousel-wrapper" style="position: relative;">
+      <!-- LEFT ARROW (<) -->
+      <button class="nav-arrow-left" id="prevSlide" disabled>
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      
+      <!-- RIGHT ARROW (>) -->
+      <button class="nav-arrow-right" id="nextSlide">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+
+      <!-- slide indicator (small at bottom) -->
+      <div class="slide-indicator-bottom" id="slideIndicator">
+        <span id="currentSlideName">Home</span> <span id="slideCounter">(1/5)</span>
+      </div>
+
+      <div class="carousel-container" id="carouselContainer">
+        <!-- SLIDE 0 - ABOUT ME -->
+        <div class="carousel-slide slide-home">
+          <div class="profile-row">
+            <div class="animated-avatar">
+              <i class="fas fa-star fa-spin" style="--fa-animation-duration: 10s;"></i>
+            </div>
+            <div>
+              <span style="background:#2d4799; padding:0.3rem 1.8rem; border-radius:40px;">✨ Gaytri Khurpade</span>
+              <h1 style="font-size:3.5rem; margin:0.5rem 0 0; background:linear-gradient(145deg,#ffffff,#c0dbff); -webkit-background-clip:text; background-clip:text; color:transparent;">Gaytri Khurpade</h1>
+              <div style="font-size:1.9rem; color:#b7d1ff;"><i class="fas fa-code"></i> Aspiring Software Engineer</div>
+            </div>
+          </div>
+          <p style="font-size:1.4rem; margin:1.5rem 0 2rem; color:#d0e2ff;">Building responsive web applications and exploring AI-driven solutions.</p>
+          <div style="display:flex; gap:3rem; flex-wrap:wrap;">
+            <span><i class="fas fa-map-pin" style="color:#7b9eff;"></i> India</span>
+            <span><i class="fas fa-briefcase"></i> Open To Opportunities</span>
+          </div>
+        </div>
+
+        <!-- SLIDE 1 - PROJECTS -->
+        <div class="carousel-slide slide-projects">
+          <h2><i class="fas fa-layer-group"></i> MY PROJECTS</h2>
+          <div class="project-slider">
+            <div class="proj-card">
+              <i class="fas fa-film" style="font-size:2.5rem;color:#9eb9ff;"></i>
+              <h3>Anime Match</h3>
+              <span class="status-pill"><i class="fas fa-spinner"></i> In progress</span>
+              <p>Swipe-based web application for anime characters. Left/right selection, responsive, adding chatbot.</p>
+              <div>HTML · CSS · JS</div>
+            </div>
+            <div class="proj-card">
+              <i class="fas fa-tasks" style="font-size:2.5rem;color:#9eb9ff;"></i>
+              <h3>Task Manager</h3>
+              <span class="status-pill"><i class="fas fa-check"></i> Completed</span>
+              <p>Add/delete tasks dynamically, DOM manipulation, clean UI.</p>
+              <div>HTML · CSS · JS</div>
+            </div>
+            <div class="proj-card">
+              <i class="fas fa-user-astronaut" style="font-size:2.5rem;color:#9eb9ff;"></i>
+              <h3>Portfolio site</h3>
+              <span class="status-pill"><i class="fas fa-check"></i> Completed</span>
+              <p>This sliding carousel portfolio — dark mode, vibrant, responsive.</p>
+              <div>HTML · CSS · JS</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 2 - SKILLS & STRENGTHS -->
+        <div class="carousel-slide slide-skills">
+          <h2><i class="fas fa-crown"></i> SKILLS & STRENGTHS</h2>
+          <div style="display:grid; gap:2.5rem; grid-template-columns:1fr 1fr;">
+            <div>
+              <h3 style="color:#b3cbff;">💻 Languages & Web Technologies</h3>
+              <div class="skill-grid">
+                <span class="skill-item">Python </span>
+                <span class="skill-item">JavaScript </span>
+                <span class="skill-item">HTML</span>
+                <span class="skill-item">CSS</span>
+                <span class="skill-item">Responsive </span>
+              </div>
+              <h3 style="margin-top:2rem;">🗄️ Database & Tools</h3>
+              <div class="skill-grid">
+                <span class="skill-item">SQL</span>
+                <span class="skill-item">Git </span>
+                <span class="skill-item">VS Code</span>
+              </div>
+              <h3 style="margin-top:2rem;">⚙️ Fundamentals</h3>
+              <div class="skill-grid">
+                <span class="skill-item">OOP </span>
+                <span class="skill-item">API</span>
+              </div>
+            </div>
+            <div>
+              <h3 style="color:#b3cbff;">✨ Professional Strengths</h3>
+              <div style="display:flex; flex-wrap:wrap; gap:0.7rem;">
+                <span class="strength-badge">Problem Solving</span>
+                <span class="strength-badge">Quick Learning</span>
+                <span class="strength-badge">Adaptability</span>
+                <span class="strength-badge">Team Collaboration</span>
+                <span class="strength-badge">Effective Communication</span>
+                <span class="strength-badge">Time Management</span>
+                <span class="strength-badge">Analytical Thinking</span>
+                <span class="strength-badge">Strong Work Ethic</span>
+              </div>
+              <h3 style="margin-top:2rem;">📚 Currently Learning</h3>
+              <div class="skill-grid">
+                <span class="skill-item" style="background:#3466aa;">Advanced JS</span>
+                <span class="skill-item" style="background:#3466aa;">React basics</span>
+                <span class="skill-item" style="background:#3466aa;">Chatbot integration</span>
+                <span class="skill-item" style="background:#3466aa;">AI</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 3 - FUTURE VISION -->
+        <div class="carousel-slide slide-vision">
+          <h2><i class="fas fa-rocket"></i> MY FUTURE VISION</h2>
+          <p style="font-size:2rem; background:#223457; display:inline-block; padding:0.3rem 2.5rem; border-radius:60px;">Future Software Engineer</p>
+          <p style="color:#c2dbff; font-size:1.3rem;">Focused on <strong>Web Development, Cloud, and AI</strong></p>
+          <ul class="vision-list">
+            <li><i class="fas fa-cloud"></i> Building scalable web applications</li>
+            <li><i class="fas fa-code"></i> Mastering modern frontend technologies</li>
+            <li><i class="fas fa-robot"></i> Exploring cloud computing and AI systems</li>
+            <li><i class="fas fa-globe"></i> Contributing to impactful software products</li>
+            <li><i class="fas fa-handshake"></i> Working with global technology companies</li>
+          </ul>
+        </div>
+
+        <!-- SLIDE 4 - CONTACT ME (FULL SEPARATE PAGE) -->
+        <div class="carousel-slide slide-contact">
+          <h2><i class="fas fa-paper-plane"></i> CONTACT ME</h2>
+          <div class="contact-full">
+            <div class="contact-grid">
+              <div class="contact-info">
+                <h3 style="margin-bottom:1.5rem;">Let's connect</h3>
+                <div class="info-item">
+                  <i class="fas fa-envelope"></i>
+                  <span>netrakhurpade@gmail.com</span>
+                </div>
+                <div class="info-item">
+                  <i class="fas fa-phone"></i>
+                  <span>+91 8329053465</span>
+                </div>
+                <div class="info-item">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <span>Nagpur, India</span>
+                </div>
+                <div class="social-links">
+                  <i class="fab fa-github"></i>
+                  <i class="fab fa-linkedin"></i>
+                  <i class="fab fa-twitter"></i>
+                  <i class="fab fa-instagram"></i>
+                </div>
+              </div>
+              <div class="contact-form-full">
+                <h3 style="margin-bottom:1.5rem;">Send a message</h3>
+                <div class="form-group">
+                  <input type="text" placeholder="your name" id="contactName">
+                </div>
+                <div class="form-group">
+                  <input type="email" placeholder="your email" id="contactEmail">
+                </div>
+                <div class="form-group">
+                  <textarea placeholder="your message" id="contactMsg"></textarea>
+                </div>
+                <button class="btn-glow" id="contactSend"><i class="fas fa-paper-plane"></i> Send message</button>
+                <div style="margin-top:1rem; color:#aac3ff; text-align:center;" id="contactStatus">✨ Ready</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <i class="fas fa-arrow-left"></i>  Use side arrows to slide  <i class="fas fa-arrow-right"></i>
+  </footer>
+
+  <script>
+    (function() {
+      const container = document.getElementById('carouselContainer');
+      const slides = document.querySelectorAll('.carousel-slide');
+      const prevBtn = document.getElementById('prevSlide');
+      const nextBtn = document.getElementById('nextSlide');
+      const slideNameSpan = document.getElementById('currentSlideName');
+      const slideCounterSpan = document.getElementById('slideCounter');
+      
+      let currentIndex = 0;
+      const totalSlides = slides.length; // 5
+      
+      const slideNames = ['Home', 'Projects', 'Skills', 'Future Vision', 'Contact'];
+
+      function updateCarousel() {
+        // slide transform
+        container.style.transform = `translateX(-${currentIndex * 100}%)`;
+        
+        // buttons
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex === totalSlides - 1;
+        
+        // update slide name and counter
+        slideNameSpan.textContent = slideNames[currentIndex];
+        slideCounterSpan.textContent = `(${currentIndex + 1}/${totalSlides})`;
+      }
+
+      nextBtn.addEventListener('click', () => {
+        if (currentIndex < totalSlides - 1) {
+          currentIndex++;
+          updateCarousel();
+        }
+      });
+
+      prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          updateCarousel();
+        }
+      });
+
+      // initial state
+      updateCarousel();
+
+      // contact form simulation
+      const contactName = document.getElementById('contactName');
+      const contactEmail = document.getElementById('contactEmail');
+      const contactMsg = document.getElementById('contactMsg');
+      const contactSend = document.getElementById('contactSend');
+      const contactStatus = document.getElementById('contactStatus');
+
+      if (contactSend) {
+        contactSend.addEventListener('click', (e) => {
+          e.preventDefault();
+          let name = contactName.value.trim();
+          let email = contactEmail.value.trim();
+          let msg = contactMsg.value.trim();
+          if (!name || !email || !msg) {
+            contactStatus.innerText = '⚠️ All fields needed';
+            return;
+          }
+          if (!email.includes('@')) {
+            contactStatus.innerText = '📧 Valid email required';
+            return;
+          }
+          contactStatus.innerText = '✅ Thanks, will respond soon!';
+          contactName.value = ''; contactEmail.value = ''; contactMsg.value = '';
+        });
+      }
+    })();
+  </script>
+  <style>
+    /* scrollbar for slides */
+    .carousel-slide { overflow-y: auto; }
+    .carousel-slide::-webkit-scrollbar { width: 6px; background: #1e2e44; }
+    .carousel-slide::-webkit-scrollbar-thumb { background: #5f7ec0; border-radius: 10px; }
+  </style>
+</body>
+</html>
